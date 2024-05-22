@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .external-link {
+    @apply text-teal-700 underline underline-offset-2;
+  }
+  .external-link span {
+    @apply inline-block m-auto;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+* {
+  user-select: none;
+  box-sizing: border-box;
+}
