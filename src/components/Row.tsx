@@ -6,14 +6,19 @@ import { USDollar } from '@/utils/utils'
 // Type definitions
 import type { Summary } from '@/utils/pocketbase'
 import type { Specification } from '@/utils/constants'
+import { MouseEventHandler } from 'react'
 
 export default function Row({
   data,
   hover,
+  className,
+  onClick,
   currencyColumns,
 }: {
   data: Summary | Specification
   hover?: boolean
+  className?: string
+  onClick?: MouseEventHandler<HTMLAnchorElement>
   currencyColumns: string[]
 }) {
   const entries = Object.entries(data)
@@ -23,11 +28,12 @@ export default function Row({
   return (
     <a
       className={twMerge(
+        hover ? 'hover-touchable' : '',
         'row',
         url === '#' ? 'pointer-events-none cursor-default' : '',
-        hover ? 'hover-touchable' : '',
+        className,
       )}
-      href={url}
+      onClick={onClick}
       target='_self'
     >
       {/* Print all the rows */}

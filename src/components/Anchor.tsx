@@ -5,9 +5,9 @@ export default function Anchor(
   props: React.AnchorHTMLAttributes<HTMLAnchorElement>,
 ) {
   return (
-    <a {...props} className='external-link'>
+    <a {...props} className='text-teal-400 underline underline-offset-2'>
       {props.children}
-      <span>
+      <span className='m-auto inline-block'>
         <GoLinkExternal />
       </span>
     </a>

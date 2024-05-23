@@ -1,31 +1,28 @@
+'use client'
+
 // Internal Dependencies
 import Heading from '@/components/Heading'
 import Table from './Table'
 
-// Utility Dependencies
-import { pocketbase } from '@/utils/pocketbase'
-import { fillSummary } from '@/utils/utils'
+// Type definitions
+import { Summary } from '@/utils/pocketbase'
+import { Dispatch, SetStateAction } from 'react'
 
 /**
  * The summary table for the salaries
  * @returns The function table of full summary table
  */
-export default async function SummaryTable() {
-  // Get all the data and make a summary of it
-  let summaries = await pocketbase.collection('summary').getFullList()
-
-  // If no summaries are present, then fetch and make summary
-  if (summaries.length === 0) {
-    // Fill the summary table
-    summaries = await fillSummary()
-    // Return a loader
-    return <div>Loading...</div>
-  }
-
+export default function SummaryTable({
+  summaries,
+  setYear,
+}: {
+  summaries: Summary[]
+  setYear: Dispatch<SetStateAction<string>>
+}) {
   return (
-    <div className='md:m-6 md:basis-1/2'>
+    <div className='glass md:m-6 md:basis-1/2'>
       <Heading className='table-heading text-2xl'>Main Table</Heading>
-      <Table summaries={summaries} />
+      <Table summaries={summaries} setYear={setYear} />
     </div>
   )
 }

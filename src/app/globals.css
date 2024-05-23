@@ -3,20 +3,22 @@
 @tailwind utilities;
 
 @layer components {
-  .external-link {
-    @apply text-teal-700 underline underline-offset-2 [&>span]:m-auto [&>span]:inline-block;
-  }
-
-  .index-table {
-    @apply rounded-b-md shadow-md;
+  .glass {
+    background: rgba(255, 255, 255, 0.05);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 6px;
+    overflow: hidden;
   }
 
   .table-heading {
-    @apply bg-lime rounded-t-md px-4 py-2 text-2xl font-semibold text-white;
+    @apply rounded-t-md bg-transparent px-4 py-2 text-4xl font-semibold text-white;
   }
 
   .header {
-    @apply cursor-pointer font-inter text-sm font-semibold capitalize text-stone-900/90 md:text-lg;
+    @apply cursor-pointer font-inter text-sm font-medium capitalize text-white/80 md:text-base;
   }
 
   .row {
@@ -28,7 +30,7 @@
 
   .hover-touchable {
     @apply transition-all duration-200;
-    @apply hover:bg-lime/50 hover:my-2 hover:scale-[.97] hover:font-medium hover:text-stone-900/90 focus:scale-95;
+    @apply hover:bg-black/50 hover:font-medium hover:text-white/90 focus:scale-95;
   }
 }
 
@@ -45,4 +47,15 @@
 
 html {
   scroll-behavior: smooth;
+}
+
+body {
+  background: hsla(148, 89%, 78%, 1);
+  background: linear-gradient(
+    to top,
+    hsl(214, 75%, 8%) 0%,
+    hsl(206, 28%, 30%) 100%
+  );
+
+  /* filter: progid: DXImageTransform.Microsoft.gradient( startColorstr="#49a597", endColorstr="#914bce", GradientType=1 ); */
 }

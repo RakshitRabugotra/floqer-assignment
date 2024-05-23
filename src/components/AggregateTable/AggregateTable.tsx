@@ -2,20 +2,18 @@
 import Heading from '@/components/Heading'
 import Table from './Table'
 
-// Utility Dependencies
-import { pocketbase } from '@/utils/pocketbase'
+// Type definitions
+import { Job } from '@/utils/pocketbase'
+
 /**
  * The summary table for the salaries
  * @returns The function table of full summary table
  */
-export default async function AggregateTable() {
-  // Get all the data and make a summary of it
-  const jobs = await pocketbase.collection('job').getFullList()
-
+export default function AggregateTable({ jobs, year }: { jobs: Job[], year: string }) {
   return (
-    <div>
+    <div className='glass'>
       <Heading className='table-heading text-2xl'>Aggregate table</Heading>
-      <Table jobs={jobs} />
+      <Table jobs={jobs} year={year}/>
     </div>
   )
 }

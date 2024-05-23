@@ -43,12 +43,32 @@ export default function LineChart({ summaries }: { summaries: Summary[] }) {
   }
 
   return (
-    <div className='flex flex-col justify-around rounded-md p-4 shadow-md md:m-6 md:basis-1/2'>
+    <div className='glass flex flex-col justify-around p-4 md:m-6 md:basis-1/2'>
       <Heading className='text-2xl font-semibold capitalize md:text-4xl'>
         The trends we see:
       </Heading>
       {data ? (
-        <Line data={data} className='self-end' />
+        <Line
+          data={data}
+          options={{
+            plugins: {
+              legend: {
+                labels: {
+                  color: '#ffffffbd',
+                },
+              },
+            },
+            scales: {
+              y: {
+                ticks: { color: '#ffffffbd' },
+              },
+              x: {
+                ticks: { color: '#ffffffbd' },
+              },
+            },
+          }}
+          className='self-end'
+        />
       ) : (
         <div className='font-sora text-4xl'>Loading...</div>
       )}

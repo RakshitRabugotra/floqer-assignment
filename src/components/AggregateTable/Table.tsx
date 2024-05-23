@@ -1,6 +1,5 @@
 'use client'
-import { useEffect, useMemo, useRef, useState } from 'react'
-import { useSearchParams } from 'next/navigation'
+import { useMemo, useRef, useState } from 'react'
 
 // Icon dependencies
 import { IoIosArrowUp, IoIosArrowDown } from 'react-icons/io'
@@ -30,25 +29,26 @@ const Icons = {
  * @param specifications The specifications array
  * @returns Functional Component of table
  */
-export default function Table({ jobs }: { jobs: Job[] }) {
-  // Get the year that we're searching for
-  const searchParams = useSearchParams()
-  const year = searchParams.get('year')
+export default function Table({ jobs, year }: { jobs: Job[]; year: string }) {
+  // Create a reference to mutate the Specification array
+  const specificationArray = useRef([] as Specification[])
+  // Create a reference to the paginated specifications
+  const paginatedArray = useRef([] as Specification[][])
 
   // Get the specification about each job
-  const specifications = makeSpecification(jobs, year)
+  const specifications = useMemo(() => {
+    specificationArray.current = makeSpecification(jobs, year)
+    paginatedArray.current = paginate(specificationArray.current).slice(0, 1)
+    return specificationArray.current
+  }, [year, jobs])
+
+  console.log(specificationArray.current)
 
   // The number of pages shown in the table
   const [showIndex, setIndex] = useState<number>(1)
 
   // The column by which the data is sorted, by default the first column
   const [keyColumn, setKeyColumn] = useState<keyof Specification | null>(null)
-
-  // Create a reference to mutate the Specification array
-  const specificationArray = useRef(specifications)
-
-  // Create a reference to the paginated specifications
-  const paginatedArray = useRef(paginate(specifications).slice(0, 1))
 
   const changePagination = (index: number) => {
     // Set the new number of rows to show
@@ -113,7 +113,7 @@ export default function Table({ jobs }: { jobs: Job[] }) {
   }
 
   // If we cannot find the specified table, then return
-  if (!year)
+  if (!year || year.length === 0)
     return (
       <div className='index-table'>
         <div className='row'>
@@ -124,28 +124,33 @@ export default function Table({ jobs }: { jobs: Job[] }) {
       </div>
     )
 
-  console.log('index: ', showIndex)
-  console.log(paginatedArray)
-
   return (
     <div className='index-table'>
       {/* Fill the column headings */}
       <Header />
       {/* Fill the rows */}
       {paginatedArray.current.map((value: Specification[], index) => (
-        <Page pages={value} key={index} />
+        <div
+          key={index}
+          className='flex flex-row items-stretch justify-between'
+        >
+          <Page pages={value.slice(0, value.length / 2)} />
+          <Page pages={value.slice(value.length / 2)} />
+        </div>
       ))}
       {/* Show more button for the rows */}
       {showIndex <= Math.ceil(specificationArray.current.length / 10) && (
-        <button
-          onClick={() => {
-            changePagination(showIndex + 1)
-            setIndex((prev) => ++prev)
-          }}
-          className='bg-lime/60 hover:bg-lime mx-2 my-4 w-full rounded-md p-4 text-lg capitalize text-black/60 hover:text-white'
-        >
-          Show More
-        </button>
+        <div className='mx-auto my-auto w-1/2'>
+          <button
+            onClick={() => {
+              changePagination(showIndex + 1)
+              setIndex((prev) => ++prev)
+            }}
+            className='bg-lime/60 hover:bg-lime my-3 w-full rounded-md p-2 text-base capitalize text-black/60 hover:text-white'
+          >
+            Show More
+          </button>
+        </div>
       )}
     </div>
   )
@@ -153,8 +158,8 @@ export default function Table({ jobs }: { jobs: Job[] }) {
 
 function Page({ pages }: { pages: Specification[] }) {
   return (
-    <div className='mb-3'>
-      <div className='[&>*:nth-child(even)]:bg-slate-500/15'>
+    <div className='basis-1/2'>
+      <div>
         {pages.map((specification: Specification, ind) => (
           <Row
             data={
@@ -165,6 +170,10 @@ function Page({ pages }: { pages: Specification[] }) {
             }
             currencyColumns={[]}
             key={ind}
+            className={twMerge(
+              ind % 2 === 0 ? 'bg-slate-500/35 hover:bg-black/50' : '',
+              'min-h-28',
+            )}
           />
         ))}
       </div>

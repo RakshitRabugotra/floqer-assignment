@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useRef, useState } from 'react'
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react'
 
 // Icon dependencies
 import { IoIosArrowUp, IoIosArrowDown } from 'react-icons/io'
@@ -22,7 +22,13 @@ const Icons = {
  * @param summaries The summaries array
  * @returns Functional Component of table
  */
-export default function Table({ summaries }: { summaries: Summary[] }) {
+export default function Table({
+  summaries,
+  setYear,
+}: {
+  summaries: Summary[]
+  setYear: Dispatch<SetStateAction<string>>
+}) {
   // The column by which the data is sorted, by default the first column
   const [keyColumn, setKeyColumn] = useState<keyof Summary | null>(null)
   // Create a reference to mutate the summary array
@@ -61,7 +67,7 @@ export default function Table({ summaries }: { summaries: Summary[] }) {
     ]
 
     return (
-      <div className='row'>
+      <div className='row p-2'>
         {headings.map((col, index) => (
           <div
             key={index}
@@ -77,7 +83,7 @@ export default function Table({ summaries }: { summaries: Summary[] }) {
   }
 
   return (
-    <div className='index-table [&>*:nth-child(even)]:bg-slate-500/15'>
+    <div className='index-table'>
       {/* Fill the column headings */}
       <Header />
       {/* Fill the rows */}
@@ -92,6 +98,8 @@ export default function Table({ summaries }: { summaries: Summary[] }) {
           }
           currencyColumns={['average_salary_usd']}
           key={index}
+          className={index % 2 === 0 ? 'bg-slate-500/35 hover:bg-black/80' : ''}
+          onClick={() => setYear((_) => summary.year.toString())}
           hover
         />
       ))}
