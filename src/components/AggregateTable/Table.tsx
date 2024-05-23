@@ -117,7 +117,7 @@ export default function Table({ jobs, year }: { jobs: Job[]; year: string }) {
     return (
       <div className='index-table'>
         <div className='row'>
-          <p className='w-full grow text-center text-stone-900/75'>
+          <p className='w-full grow text-center text-white/75'>
             Click on your favorite row of data to show more results!
           </p>
         </div>
