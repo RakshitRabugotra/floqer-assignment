@@ -4,10 +4,27 @@
 
 @layer components {
   .external-link {
-    @apply text-teal-700 underline underline-offset-2;
+    @apply text-teal-700 underline underline-offset-2 [&>span]:m-auto [&>span]:inline-block;
   }
-  .external-link span {
-    @apply inline-block m-auto;
+
+  .table-wrapper {
+    @apply mt-12 rounded-xl;
+  }
+
+  .index-table {
+    @apply shadow-md [&>*:nth-child(odd)]:bg-slate-500/15;
+  }
+
+  .row {
+    @apply flex w-full flex-row items-center justify-between p-2;
+  }
+  .row > * {
+    @apply inline-flex items-center justify-between gap-2 text-wrap px-4;
+  }
+
+  .hover-touchable {
+    @apply transition-all duration-300;
+    @apply hover:scale-[.97] hover:bg-amber-400 hover:text-white/90 focus:scale-95;
   }
 }
 
@@ -20,4 +37,8 @@
 * {
   user-select: none;
   box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
 }

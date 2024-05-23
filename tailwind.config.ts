@@ -11,6 +11,9 @@ const config: Config = {
         sora: ['Sora', 'sans-serif'],
         inter: ['Inter', 'sans-serif'],
       },
+      color: {
+        blue: '#453bcd',
+      },
     },
   },
   plugins: [],
