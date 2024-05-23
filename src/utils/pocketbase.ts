@@ -30,10 +30,6 @@ interface TypedPocketBase extends PocketBase {
 const store = new LocalAuthStore()
 
 export const pocketbase = new PocketBase(
-  process.env.DB_URL,
+  "https://floqer-assignmen.fly.dev/",
   store,
 ) as TypedPocketBase
-
-/* Creates a new instance of the pocketbase for client side queries */
-export const createClient = () =>
-  new PocketBase(process.env.DB_URL, store) as TypedPocketBase
