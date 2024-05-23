@@ -12,8 +12,17 @@ import { fillSummary } from '@/utils/utils'
 import { run } from '@/utils/gemini'
 
 export default async function Home() {
-  const jobs = await pocketbase.collection('job').getFullList()
-  let summaries = await pocketbase.collection('summary').getFullList()
+  let summaries = null
+  try {
+    const jobs = await pocketbase
+      .collection('job')
+      .getFullList({ requestKey: null })
+    summaries = await pocketbase
+      .collection('summary')
+      .getFullList({ requestKey: null })
+  } catch (error) {
+    return <div>Loading...</div>
+  }
 
   // If the summaries is empty, then fill it
   if (summaries.length <= 0) summaries = await fillSummary()

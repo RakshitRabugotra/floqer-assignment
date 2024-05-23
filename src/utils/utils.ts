@@ -117,7 +117,12 @@ export function makeSummary(data: Job[]): Summary[] {
  */
 export async function fillSummary(): Promise<Summary[]> {
   // Fetch the data from the salary table
-  const data = await pocketbase.collection('job').getFullList()
+  let data = null
+  try {
+    data = await pocketbase.collection('job').getFullList({ requestKey: null })
+  } catch (e) {
+    data = new Array<Job>()
+  }
   // Make a summary table from it
   const summarizedData = makeSummary(data)
   // Upload the summary data
