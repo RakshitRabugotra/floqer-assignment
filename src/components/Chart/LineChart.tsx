@@ -1,8 +1,8 @@
 'use client'
 import dynamic from 'next/dynamic'
 import 'chart.js/auto'
-import { useEffect, useMemo, useState } from 'react'
-import { Summary, createClient } from '@/utils/pocketbase'
+import { useMemo } from 'react'
+import { Summary } from '@/utils/pocketbase'
 import Heading from '../Heading'
 
 const Line = dynamic(() => import('react-chartjs-2').then((mod) => mod.Line), {
