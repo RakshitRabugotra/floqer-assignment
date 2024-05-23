@@ -34,8 +34,8 @@ export default function Row({
       {entries.map(([column, value], index) => (
         <div
           className={twMerge(
+            'inline-flex items-center justify-between gap-2 text-wrap px-4',
             `basis-1/${length}`,
-            index % 2 === 1 ? 'border-x-2' : '',
           )}
           key={index}
         >

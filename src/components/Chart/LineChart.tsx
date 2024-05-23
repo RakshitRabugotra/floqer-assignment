@@ -1,29 +1,57 @@
 'use client'
 import dynamic from 'next/dynamic'
 import 'chart.js/auto'
+import { useEffect, useMemo, useState } from 'react'
+import { Summary, createClient } from '@/utils/pocketbase'
+import Heading from '../Heading'
 
 const Line = dynamic(() => import('react-chartjs-2').then((mod) => mod.Line), {
   ssr: false,
 })
 
-const data = {
-  labels: ['January', 'February', 'March', 'April', 'May'],
-  datasets: [
-    {
-      label: 'GeeksforGeeks Line Chart',
-      data: [65, 59, 80, 81, 56],
-      fill: false,
-      borderColor: 'rgb(75, 192, 192)',
-      tension: 0.1,
-    },
-  ],
+type LineChartDataType = {
+  labels: string[]
+  datasets: {
+    label: string
+    data: number[]
+    fill: boolean
+    borderColor: string
+    tension: 0.1
+  }[]
 }
 
-export default function LineChart() {
+export default function LineChart({ summaries }: { summaries: Summary[] }) {
+  // Set the data for different lines
+  const data = useMemo<LineChartDataType>(
+    () =>
+      ({
+        labels: summaries.map((summary, index) => summary.year.toString()),
+        datasets: [
+          {
+            label: 'Salary Trend in USD',
+            data: summaries.map((summary, index) => summary.average_salary_usd),
+            fill: false,
+            borderColor: 'rgb(75, 192, 192)',
+          },
+        ],
+      }) as LineChartDataType,
+    [summaries],
+  )
+
+  if (Object.entries(data).length === 0) {
+    return <div className='font-sora text-4xl'>Loading...</div>
+  }
+
   return (
-    <div style={{ width: '700px', height: '700px' }}>
-      <h1>Example 1: Line Chart</h1>
-      <Line data={data} />
+    <div className='flex flex-col justify-around rounded-md p-4 shadow-md md:m-6 md:basis-1/2'>
+      <Heading className='text-2xl font-semibold capitalize md:text-4xl'>
+        The trends we see:
+      </Heading>
+      {data ? (
+        <Line data={data} className='self-end' />
+      ) : (
+        <div className='font-sora text-4xl'>Loading...</div>
+      )}
     </div>
   )
 }

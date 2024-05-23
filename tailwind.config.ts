@@ -11,8 +11,10 @@ const config: Config = {
         sora: ['Sora', 'sans-serif'],
         inter: ['Inter', 'sans-serif'],
       },
-      color: {
-        blue: '#453bcd',
+      colors: {
+        light: '#3376e2',
+        lime: 'rgb(75, 192, 192)',
+        highlight: '#fffaf1',
       },
     },
   },

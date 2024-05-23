@@ -65,6 +65,7 @@ export default function Table({ summaries }: { summaries: Summary[] }) {
         {headings.map((col, index) => (
           <div
             key={index}
+            className='header'
             onClick={() => handleSort(col.column as keyof Summary)}
           >
             {col.text}
@@ -76,7 +77,7 @@ export default function Table({ summaries }: { summaries: Summary[] }) {
   }
 
   return (
-    <div className='index-table'>
+    <div className='index-table [&>*:nth-child(even)]:bg-slate-500/15'>
       {/* Fill the column headings */}
       <Header />
       {/* Fill the rows */}

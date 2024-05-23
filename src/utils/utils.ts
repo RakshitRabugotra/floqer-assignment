@@ -1,5 +1,5 @@
 import { Specification } from './constants'
-import { Salary, Summary, pocketbase } from './pocketbase'
+import { Job, Summary, pocketbase } from './pocketbase'
 
 /**
  * Converter to convert currency (USD)
@@ -42,6 +42,29 @@ export function groupBy<K, V>(
 }
 
 /**
+ * Makes paginated list from a given plain list
+ * @param list The array to paginate
+ * @param factor The max-number of elements in one page
+ */
+export function paginate<T>(list: Array<T>, factor: number = 10) {
+  const pages = new Array<Array<T>>()
+
+  // The length of the array will be the total number of elements divided by factor
+  // The ceiling of it particularly
+  // Populate the page array
+  for (let i = 0; i < Math.ceil(list.length / factor); i++) {
+    pages.push(new Array<T>())
+  }
+
+  // Iterate over the list and paginate it
+  list.forEach((element, index) => {
+    pages[Math.floor(index / factor)].push(element)
+  })
+
+  return pages
+}
+
+/**
  * Takes average of the array based on some getter attribute
  * @param list The array to get the average from
  * @param keyGetter The attribute to take average of
@@ -61,20 +84,20 @@ export function average<T>(
 }
 
 /**
- * Summarizes the data given in the Salary table
- * @param data The array of Salary data
+ * Summarizes the data given in the Job table
+ * @param data The array of Job data
  * @returns An array of Summary data
  */
-export function makeSummary(data: Salary[]): Summary[] {
+export function makeSummary(data: Job[]): Summary[] {
   // Make a group of salary by their year
-  const groupedSalaries = groupBy<string, Salary>(
+  const groupedSalaries = groupBy<string, Job>(
     data,
     (salary) => salary.work_year,
   )
   // Create a new Object
   const summary = [] as Summary[]
   // Iterate over the grouped salaries by year and make a group of them
-  groupedSalaries.forEach((salaries: Salary[], year: string) => {
+  groupedSalaries.forEach((salaries: Job[], year: string) => {
     summary.push({
       year: parseInt(year),
       year_job_count: salaries.length,
@@ -94,7 +117,7 @@ export function makeSummary(data: Salary[]): Summary[] {
  */
 export async function fillSummary(): Promise<Summary[]> {
   // Fetch the data from the salary table
-  const data = await pocketbase.collection('salary').getFullList()
+  const data = await pocketbase.collection('job').getFullList()
   // Make a summary table from it
   const summarizedData = makeSummary(data)
   // Upload the summary data
@@ -111,14 +134,14 @@ export async function fillSummary(): Promise<Summary[]> {
 }
 
 export function makeSpecification(
-  data: Salary[],
-  work_year: Salary['work_year'] | null,
+  data: Job[],
+  work_year: Job['work_year'] | null,
 ): Specification[] {
   // If the work year isn't defined
   if (!work_year) return []
 
   // Make a group of salary by their year
-  const groupedSalaries = groupBy<string, Salary>(
+  const groupedSalaries = groupBy<string, Job>(
     data,
     (salary) => salary.work_year,
   )
@@ -130,7 +153,7 @@ export function makeSpecification(
   if (!jobs) return specification
 
   // Group the jobs by their title
-  const groupedTitles = groupBy<string, Salary>(jobs, (job) => job.job_title)
+  const groupedTitles = groupBy<string, Job>(jobs, (job) => job.job_title)
 
   // Iterate over the grouped jobs by their title and record the specifications for each job-title
   groupedTitles.forEach((jobs, jobTitle, index) => {

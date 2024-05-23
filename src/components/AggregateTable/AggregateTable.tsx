@@ -10,13 +10,11 @@ import { pocketbase } from '@/utils/pocketbase'
  */
 export default async function AggregateTable() {
   // Get all the data and make a summary of it
-  const jobs = await pocketbase.collection('salary').getFullList()
+  const jobs = await pocketbase.collection('job').getFullList()
 
   return (
-    <div className='table-wrapper'>
-      <Heading className='bg-purple-700 px-4 py-2 text-2xl font-semibold text-white'>
-        Aggregate table
-      </Heading>
+    <div>
+      <Heading className='table-heading text-2xl'>Aggregate table</Heading>
       <Table jobs={jobs} />
     </div>
   )

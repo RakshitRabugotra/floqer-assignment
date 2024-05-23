@@ -1,5 +1,5 @@
 'use client'
-import { useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 
 // Icon dependencies
@@ -12,10 +12,11 @@ import Heading from '@/components/Heading'
 
 // Type definitions
 import type { Specification } from '@/utils/constants'
-import type { Salary } from '@/utils/pocketbase'
+import type { Job } from '@/utils/pocketbase'
 
 // Utility Dependencies
-import { makeSpecification } from '@/utils/utils'
+import { makeSpecification, paginate } from '@/utils/utils'
+import { twMerge } from 'tailwind-merge'
 
 // Icons for the column by which the elements are sorted
 const Icons = {
@@ -29,7 +30,7 @@ const Icons = {
  * @param specifications The specifications array
  * @returns Functional Component of table
  */
-export default function Table({ jobs }: { jobs: Salary[] }) {
+export default function Table({ jobs }: { jobs: Job[] }) {
   // Get the year that we're searching for
   const searchParams = useSearchParams()
   const year = searchParams.get('year')
@@ -37,10 +38,25 @@ export default function Table({ jobs }: { jobs: Salary[] }) {
   // Get the specification about each job
   const specifications = makeSpecification(jobs, year)
 
+  // The number of pages shown in the table
+  const [showIndex, setIndex] = useState<number>(1)
+
   // The column by which the data is sorted, by default the first column
   const [keyColumn, setKeyColumn] = useState<keyof Specification | null>(null)
+
   // Create a reference to mutate the Specification array
   const specificationArray = useRef(specifications)
+
+  // Create a reference to the paginated specifications
+  const paginatedArray = useRef(paginate(specifications).slice(0, 1))
+
+  const changePagination = (index: number) => {
+    // Set the new number of rows to show
+    paginatedArray.current = paginate(specificationArray.current).slice(
+      0,
+      index,
+    )
+  }
 
   // Sort the specifications, if the key-column changes
   const handleSort = (column: keyof Specification) => {
@@ -77,13 +93,14 @@ export default function Table({ jobs }: { jobs: Salary[] }) {
 
     return (
       <>
-        <Heading className=' bg-purple-400 p-3 text-center font-inter text-lg font-medium'>
+        <Heading className='p-3 text-center font-inter text-lg font-medium'>
           Year: {year}
         </Heading>
         <div className='row'>
           {headings.map((col, index) => (
             <div
               key={index}
+              className='header'
               onClick={() => handleSort(col.column as keyof Specification)}
             >
               {col.text}
@@ -107,23 +124,50 @@ export default function Table({ jobs }: { jobs: Salary[] }) {
       </div>
     )
 
+  console.log('index: ', showIndex)
+  console.log(paginatedArray)
+
   return (
     <div className='index-table'>
       {/* Fill the column headings */}
       <Header />
       {/* Fill the rows */}
-      {specificationArray.current.map((specification: Specification, index) => (
-        <Row
-          data={
-            {
-              job_title: specification.job_title,
-              job_count: specification.job_count,
-            } as Specification
-          }
-          currencyColumns={[]}
-          key={index}
-        />
+      {paginatedArray.current.map((value: Specification[], index) => (
+        <Page pages={value} key={index} />
       ))}
+      {/* Show more button for the rows */}
+      {showIndex <= Math.ceil(specificationArray.current.length / 10) && (
+        <button
+          onClick={() => {
+            changePagination(showIndex + 1)
+            setIndex((prev) => ++prev)
+          }}
+          className='bg-lime/60 hover:bg-lime mx-2 my-4 w-full rounded-md p-4 text-lg capitalize text-black/60 hover:text-white'
+        >
+          Show More
+        </button>
+      )}
+    </div>
+  )
+}
+
+function Page({ pages }: { pages: Specification[] }) {
+  return (
+    <div className='mb-3'>
+      <div className='[&>*:nth-child(even)]:bg-slate-500/15'>
+        {pages.map((specification: Specification, ind) => (
+          <Row
+            data={
+              {
+                job_title: specification.job_title,
+                job_count: specification.job_count,
+              } as Specification
+            }
+            currencyColumns={[]}
+            key={ind}
+          />
+        ))}
+      </div>
     </div>
   )
 }

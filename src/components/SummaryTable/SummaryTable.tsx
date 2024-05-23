@@ -23,10 +23,8 @@ export default async function SummaryTable() {
   }
 
   return (
-    <div className='table-wrapper'>
-      <Heading className=' bg-purple-700 px-4 py-2 text-2xl font-semibold text-white'>
-        Main Table
-      </Heading>
+    <div className='md:m-6 md:basis-1/2'>
+      <Heading className='table-heading text-2xl'>Main Table</Heading>
       <Table summaries={summaries} />
     </div>
   )

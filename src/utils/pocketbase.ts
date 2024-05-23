@@ -1,7 +1,7 @@
 import PocketBase, { LocalAuthStore, RecordService } from 'pocketbase'
 
 // The interface for salaries
-export interface Salary {
+export interface Job {
   work_year: string
   experience_level: string
   employment_type: string
@@ -23,7 +23,7 @@ export interface Summary {
 
 interface TypedPocketBase extends PocketBase {
   collection(idOrName: string): RecordService // default fallback for any other collection
-  collection(idOrName: 'salary'): RecordService<Salary>
+  collection(idOrName: 'job'): RecordService<Job>
   collection(idOrName: 'summary'): RecordService<Summary>
 }
 
@@ -33,3 +33,7 @@ export const pocketbase = new PocketBase(
   process.env.DB_URL,
   store,
 ) as TypedPocketBase
+
+/* Creates a new instance of the pocketbase for client side queries */
+export const createClient = () =>
+  new PocketBase(process.env.DB_URL, store) as TypedPocketBase
