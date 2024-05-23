@@ -13,10 +13,9 @@ import { run } from '@/utils/gemini'
 
 export default async function Home() {
   let summaries = null
+  let jobs = null
   try {
-    const jobs = await pocketbase
-      .collection('job')
-      .getFullList({ requestKey: null })
+    jobs = await pocketbase.collection('job').getFullList({ requestKey: null })
     summaries = await pocketbase
       .collection('summary')
       .getFullList({ requestKey: null })

@@ -30,6 +30,6 @@ interface TypedPocketBase extends PocketBase {
 const store = new LocalAuthStore()
 
 export const pocketbase = new PocketBase(
-  "https://floqer-assignmen.fly.dev/",
+  'https://floqer-assignmen.fly.dev/',
   store,
 ) as TypedPocketBase
