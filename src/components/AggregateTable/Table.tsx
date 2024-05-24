@@ -35,17 +35,18 @@ export default function Table({ jobs, year }: { jobs: Job[]; year: string }) {
   // Create a reference to the paginated specifications
   const paginatedArray = useRef([] as Specification[][])
 
+  // The number of pages shown in the table
+  const [showIndex, setIndex] = useState<number>(1)
+
   // Get the specification about each job
   const specifications = useMemo(() => {
     specificationArray.current = makeSpecification(jobs, year)
     paginatedArray.current = paginate(specificationArray.current).slice(0, 1)
+    // Set the index to 1 again
+    setIndex((prev) => 1)
+
     return specificationArray.current
   }, [year, jobs])
-
-  console.log(specificationArray.current)
-
-  // The number of pages shown in the table
-  const [showIndex, setIndex] = useState<number>(1)
 
   // The column by which the data is sorted, by default the first column
   const [keyColumn, setKeyColumn] = useState<keyof Specification | null>(null)
@@ -146,7 +147,7 @@ export default function Table({ jobs, year }: { jobs: Job[]; year: string }) {
               changePagination(showIndex + 1)
               setIndex((prev) => ++prev)
             }}
-            className='bg-lime/60 hover:bg-lime my-3 w-full rounded-md p-2 text-base capitalize text-black/60 hover:text-white'
+            className='my-3 w-full rounded-md bg-lime/60 p-2 text-base capitalize text-black/60 hover:bg-lime hover:text-white'
           >
             Show More
           </button>
