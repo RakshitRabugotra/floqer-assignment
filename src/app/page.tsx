@@ -14,17 +14,25 @@ import { run } from '@/utils/gemini'
 export default async function Home() {
   let summaries = null
   let jobs = null
+
   try {
-    jobs = await pocketbase.collection('job').getFullList({ requestKey: null })
+    jobs = await pocketbase
+      .collection('job')
+      .getFullList({ batch: 20000, requestKey: null })
     summaries = await pocketbase
       .collection('summary')
-      .getFullList({ requestKey: null })
+      .getFullList({ batch: 10, requestKey: null })
   } catch (error) {
     return <div>Loading...</div>
   }
 
+  console.log('Jobs length: ', jobs.length)
+  console.log(summaries)
+
   // If the summaries is empty, then fill it
-  if (summaries.length <= 0) summaries = await fillSummary()
+  if (summaries.length <= 0) {
+    summaries = await fillSummary()
+  }
 
   const response = await run(summaries)
 

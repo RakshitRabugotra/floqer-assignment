@@ -2,6 +2,7 @@ import PocketBase, { LocalAuthStore, RecordService } from 'pocketbase'
 
 // The interface for salaries
 export interface Job {
+  id: string
   work_year: string
   experience_level: string
   employment_type: string
@@ -16,6 +17,7 @@ export interface Job {
 }
 
 export interface Summary {
+  id: string
   year: number
   year_job_count: number
   average_salary_usd: number
