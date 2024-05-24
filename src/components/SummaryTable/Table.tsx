@@ -39,8 +39,8 @@ export default function Table({
     // Set the new key column
     setKeyColumn(column)
     // Sort the summaries, according to the new keyColumn
-    summaryArray.current = summaries.sort(
-      (sumA: Summary, sumB: Summary) => sumA[column] - sumB[column],
+    summaryArray.current = summaries.sort((sumA: Summary, sumB: Summary) =>
+      sumA[column] === sumB[column] ? 0 : sumA[column] > sumB[column] ? 1 : -1,
     )
   }
 
